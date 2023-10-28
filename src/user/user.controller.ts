@@ -18,12 +18,12 @@ export class UserController {
     }
 
     @Post('add')
-    async createUser(@Body() userData: {username:string, password:string}): Promise<UserModel> {
+    async createUser(@Body() userData: {username:string, password:string, admin: boolean}): Promise<UserModel> {
         return this.userService.createUser(userData)
     }
 
     @Put('update/:id')
-    async updateUserPassword(@Param('id') id: string, @Body() data: {username, password}): Promise<UserModel> {
+    async updateUser(@Param('id') id: string, @Body() data: {username, password, admin}): Promise<UserModel> {
         return this.userService.updateUser({
             where: {id: Number(id)},
             data: data

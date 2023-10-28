@@ -15,6 +15,7 @@ model Users {
   username String
   password String
   monsters Monsters[]
+  admin Boolean
 }
 
 model Monsters {
@@ -25,4 +26,5 @@ model Monsters {
   description String
   author Users @relation(fields: [authorId], references: [id])
   authorId Int
+  imgURL String
 }

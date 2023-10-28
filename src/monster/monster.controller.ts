@@ -28,13 +28,14 @@ export class MonsterController {
 
   // create a monster
   @Post('add')
-  async createMonster(@Body() data: {name:string, description:string, authorId:number}): Promise<MonsterModel> {
+  async createMonster(@Body() data: {name:string, description:string, authorId:number, imgURL: string}): Promise<MonsterModel> {
 
-    const {name, description, authorId} = data
+    const {name, description, authorId, imgURL} = data
 
     return this.monsterService.createMonster({
       name,
       description,
+      imgURL,
       author: {
         connect: {
           id: Number(authorId)
@@ -45,7 +46,7 @@ export class MonsterController {
 
   // update a monster
   @Put('update/:id')
-  async updateMonster(@Param('id') id: string, @Body() data: { name:string, description: string }): Promise<MonsterModel> {
+  async updateMonster(@Param('id') id: string, @Body() data: { name:string, description: string, imgURL: string }): Promise<MonsterModel> {
 
     return this.monsterService.updateMonster({
       where: {
