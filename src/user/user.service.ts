@@ -52,4 +52,23 @@ export class UserService {
     async deleteUser(where: Prisma.UsersWhereUniqueInput): Promise<Users>{
         return this.prisma.users.delete({where})
     }
+
+    // verifica se o usuario existe e retorna um boolean
+    async verifyUser(data: Prisma.UsersWhereUniqueInput): Promise<boolean> {
+        
+        const {username, password} = data
+
+        let user = this.prisma.users.findUnique({where: {
+            username: data.username,
+            password: data.password,
+            id: data.id
+        }})
+
+        if (user) {
+            return true;
+        }
+        
+        return false;
+
+    }
 }

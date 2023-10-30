@@ -17,6 +17,18 @@ export class UserController {
         return this.userService.user({id: Number(id)})
     }
 
+    // verifica se usuario existe no banco
+    @Post('verify')
+    async verifyUser (@Body() userData: {username: string, password: string}): Promise<boolean> {
+
+        const user = this.userService.users({where: {password: userData.password, username: userData.username}})
+
+        if ((await user).length == 0) return false;
+
+        return true
+
+    }
+
     @Post('add')
     async createUser(@Body() userData: {username:string, password:string, admin: boolean}): Promise<UserModel> {
         return this.userService.createUser(userData)
