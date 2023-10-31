@@ -13,6 +13,7 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     async login(@Body() data : LoginUserDTO) {
         // return await this.authService.login(data)
+        return 'ok'
     }
 
 }
