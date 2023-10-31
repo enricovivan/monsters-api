@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Users as UserModel } from '@prisma/client'
 import { CreateUserDTO } from './dtos/create-user.dto';
@@ -22,6 +22,7 @@ export class UserController {
 
     // verifica se usuario existe no banco
     @Post('verify')
+    @HttpCode(HttpStatus.OK)
     async verifyUser (@Body() userData: {username: string, password: string}): Promise<boolean> {
 
         const {username, password} = userData
