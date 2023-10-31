@@ -1,6 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Users as UserModel } from '@prisma/client'
+import { CreateUserDTO } from './dtos/create-user.dto';
+
+import * as bcrypt from 'bcrypt'
 
 @Controller('user')
 export class UserController {
@@ -21,16 +24,16 @@ export class UserController {
     @Post('verify')
     async verifyUser (@Body() userData: {username: string, password: string}): Promise<boolean> {
 
-        const user = this.userService.users({where: {password: userData.password, username: userData.username}})
+        const {username, password} = userData
 
-        if ((await user).length == 0) return false;
+        let usernameUser = await this.userService.userByUsername(username);
 
-        return true
+        return await bcrypt.compare(password, usernameUser.password);
 
     }
 
     @Post('add')
-    async createUser(@Body() userData: {username:string, password:string, admin: boolean}): Promise<UserModel> {
+    async createUser(@Body() userData: CreateUserDTO): Promise<UserModel> {
         return this.userService.createUser(userData)
     }
 

@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, Users } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateUserDTO } from './dtos/create-user.dto';
+
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UserService {
@@ -33,9 +36,31 @@ export class UserService {
         })
     }
 
+    // encontra um usuario pelo username
+    async userByUsername(username: string): Promise<Users> {
+
+        return await this.prisma.users.findUnique({
+            where: {
+                username
+            }
+        })
+
+    }
+
     // Cria um usuário
-    async createUser(data: Prisma.UsersCreateInput): Promise<Users>{
-        return this.prisma.users.create({data})
+    async createUser(data: CreateUserDTO): Promise<Users>{
+
+        const user = {
+            ...data,
+            password: await bcrypt.hash(data.password, 10)
+        }
+
+        const userCreation = await this.prisma.users.create({data: user})
+
+        return {
+            ...userCreation,
+            password: undefined
+        }
     }
 
     // atualiza um usuário
@@ -53,22 +78,4 @@ export class UserService {
         return this.prisma.users.delete({where})
     }
 
-    // verifica se o usuario existe e retorna um boolean
-    async verifyUser(data: Prisma.UsersWhereUniqueInput): Promise<boolean> {
-        
-        const {username, password} = data
-
-        let user = this.prisma.users.findUnique({where: {
-            username: data.username,
-            password: data.password,
-            id: data.id
-        }})
-
-        if (user) {
-            return true;
-        }
-        
-        return false;
-
-    }
 }
